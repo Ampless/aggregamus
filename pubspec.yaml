@@ -1,0 +1,11 @@
+name: aggregamus
+description: LEL
+
+environment:
+  sdk: '>=2.12.0 <3.0.0'
+
+dependencies:
+  dsbuntis: ^3.3.0
+
+dev_dependencies:
+  pedantic: ^1.11.0
