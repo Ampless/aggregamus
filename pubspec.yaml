@@ -5,13 +5,16 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  dsbuntis: ^4.0.0-alpha.3
-  schttp: ^2.0.0
+  dsbuntis: ^4.0.0-alpha.4
+  schttp: ^3.0.0-alpha.0
 
 dependency_overrides:
   dsbuntis:
     git:
       url: https://github.com/Ampless/dsbuntis.git
+  schttp:
+    git:
+      url: https://github.com/Ampless/schttp.git
 
 dev_dependencies:
   pedantic: ^1.11.0

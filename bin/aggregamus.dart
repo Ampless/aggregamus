@@ -12,13 +12,11 @@ Future<void> sample(
 ) async {
   final now = DateTime.now();
   final cache = <String, String>{};
-  final http = ScHttpClient((_) => null, (id, resp, ttl) => cache[id] = resp);
-  final plans = await getAllSubs(
-    username,
-    password,
-    http,
-    'http://$proxy/mobileapi.dsbcontrol.de',
+  final http = ScHttpClient(
+    setCache: (id, resp, ttl) => cache[id] = resp,
+    findProxy: (_) => [proxy],
   );
+  final plans = await getAllSubs(username, password, http);
   print('Got data from dsbuntis, saving...');
   final json = jsonEncode({
     'unixts': now.millisecondsSinceEpoch,

@@ -20,10 +20,10 @@ packages:
     description:
       path: "."
       ref: HEAD
-      resolved-ref: "9ba760a25b45550275046f25f340c0109e42b0f1"
+      resolved-ref: "6e73c2891821ed59f1a1e529f03ad8d6c4a2d736"
       url: "https://github.com/Ampless/dsbuntis.git"
     source: git
-    version: "4.0.0-alpha.3"
+    version: "4.0.0-alpha.4"
   html:
     dependency: transitive
     description:
@@ -62,10 +62,12 @@ packages:
   schttp:
     dependency: "direct main"
     description:
-      name: schttp
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "2.0.0"
+      path: "."
+      ref: HEAD
+      resolved-ref: "24053d1e9ecd6f9350147cae45d5c7cf5b31244a"
+      url: "https://github.com/Ampless/schttp.git"
+    source: git
+    version: "3.0.0-alpha.0"
   source_span:
     dependency: transitive
     description:
