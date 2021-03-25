@@ -13,12 +13,13 @@ Future<void> sample(
   final now = DateTime.now();
   final cache = <String, String>{};
   final http = ScHttpClient((_) => null, (id, resp, ttl) => cache[id] = resp);
-  final plans = getAllSubs(
+  final plans = await getAllSubs(
     username,
     password,
     http,
     'http://$proxy/mobileapi.dsbcontrol.de',
   );
+  print('Got data from dsbuntis, saving...');
   final json = jsonEncode({
     'unixts': now.millisecondsSinceEpoch,
     'ts': now.toIso8601String(),
@@ -27,16 +28,17 @@ Future<void> sample(
   });
   await File('$output/${now.millisecondsSinceEpoch / 1000}.json')
       .writeAsString(json);
+  print('Saved to file.');
 }
 
-void main() {
+void main() async {
   final config = jsonDecode(File('/etc/aggregamusrc.json').readAsStringSync());
   String username = config['username'];
   String password = config['password'];
   String output = config['output'];
   String proxy = config['proxy'];
   while (true) {
-    sample(username, password, output, proxy);
+    await sample(username, password, output, proxy);
     sleep(Duration(minutes: 5));
   }
 }
