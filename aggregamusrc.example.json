@@ -1,0 +1,6 @@
+{
+    "username": "133742",
+    "password": "topsecret",
+    "output": "/var/dsb",
+    "proxy": "127.0.0.1:5566"
+}

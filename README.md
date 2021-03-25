@@ -5,15 +5,8 @@ Big data with substitution plans.
 Make sure that you understand all of the instructions first, because you
 probably want to modify them.
 
-1. Create the configuration file (`/etc/aggregamusrc.json`), it looks like this:
-```json
-{
-    "username": "133742",
-    "password": "topsecret",
-    "output": "/var/dsb",
-    "proxy": "127.0.0.1:5566"
-}
-```
+1. Create the [configuration file](aggregamusrc.example.json) at
+`/etc/aggregamusrc.json`
 2. Make sure, your output directory exists: `mkdir -p /var/dsb`
 3. Make sure, you have a Tor proxy running at the address specified in `proxy`:
 `sudo docker run -d -p 5566:5566 -p 4444:4444 --env tors=42 --restart always --name tor-proxy mattes/rotating-proxy`
