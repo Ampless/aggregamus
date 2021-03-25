@@ -5,7 +5,7 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  dsbuntis: ^4.0.0-alpha.2
+  dsbuntis: ^4.0.0-alpha.3
   schttp: ^2.0.0
 
 dependency_overrides:

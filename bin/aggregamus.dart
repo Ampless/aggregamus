@@ -13,7 +13,12 @@ Future<void> sample(
   final now = DateTime.now();
   final cache = <String, String>{};
   final http = ScHttpClient((_) => null, (id, resp, ttl) => cache[id] = resp);
-  final plans = getAllSubs(username, password, http);
+  final plans = getAllSubs(
+    username,
+    password,
+    http,
+    'http://$proxy/mobileapi.dsbcontrol.de',
+  );
   final json = jsonEncode({
     'unixts': now.millisecondsSinceEpoch,
     'ts': now.toIso8601String(),
