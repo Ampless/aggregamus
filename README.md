@@ -2,9 +2,10 @@
 Big data with substitution plans.
 
 ## How to use
-0. Make sure that you understand all of the instructions first, because you
+Make sure that you understand all of the instructions first, because you
 probably want to modify them.
-1. Create the configuration (`/etc/aggregamusrc.json`), it looks like this:
+
+1. Create the configuration file (`/etc/aggregamusrc.json`), it looks like this:
 ```json
 {
     "username": "133742",
