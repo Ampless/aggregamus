@@ -14,7 +14,7 @@ Future<void> sample(
   final cache = <String, String>{};
   final http = ScHttpClient(
     setCache: (id, resp, ttl) => cache[id] = resp,
-    findProxy: (_) => [proxy],
+    findProxy: (_) => 'PROXY $proxy',
   );
   final plans = await getAllSubs(username, password, http);
   print('Got data from dsbuntis, saving...');
