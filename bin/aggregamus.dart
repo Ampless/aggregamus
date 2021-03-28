@@ -24,7 +24,7 @@ Future<void> sample(
     'plans': plans,
     'cache': cache,
   });
-  await File('$output/${(now.millisecondsSinceEpoch / 1000) as int}.json')
+  await File('$output/${(now.millisecondsSinceEpoch / 1000).round()}.json')
       .writeAsString(json);
   print('Saved to file.');
 }
