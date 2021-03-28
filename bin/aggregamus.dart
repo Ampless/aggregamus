@@ -30,9 +30,10 @@ Future<void> sample(
 }
 
 Future<void> cleanup(String output) async {
+  final files = await Directory(output).list().where((e) => e is File).toList();
+  if (files.length < 300) return;
   print('Cleaning up...');
   final id = DateTime.now().millisecondsSinceEpoch;
-  final files = await Directory(output).list().where((e) => e is File).toList();
   final pr = await Process.run(
       '/bin/sh',
       [
@@ -54,11 +55,9 @@ void main() async {
   String password = config['password'];
   String output = config['output'];
   String proxy = config['proxy'];
-  var count = 0;
   while (true) {
     await sample(username, password, output, proxy);
-    if (count % 300 == 299) await cleanup(output);
-    count++;
+    await cleanup(output);
     sleep(Duration(minutes: 5));
   }
 }
