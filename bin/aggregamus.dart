@@ -32,20 +32,20 @@ Future<void> sample(
 Future<void> cleanup(String output) async {
   print('Cleaning up...');
   final id = DateTime.now().millisecondsSinceEpoch;
-  final files = Directory(output).list().where((e) => e is File);
+  final files = await Directory(output).list().where((e) => e is File).toList();
   final pr = await Process.run(
       '/bin/sh',
       [
         '-c',
         'tar cJvf $output/$id.tar.xz ' +
-            await files.map((e) => e.absolute.path).reduce((p, e) => '$p $e')
+            files.map((e) => e.absolute.path).reduce((p, e) => '$p $e')
       ],
       stdoutEncoding: utf8,
       stderrEncoding: utf8);
   print(pr.stdout);
   print(pr.stderr);
   if (pr.exitCode != 0) return;
-  await files.forEach((e) => e.deleteSync());
+  files.forEach((e) => e.deleteSync());
 }
 
 void main() async {
