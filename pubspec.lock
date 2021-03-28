@@ -18,12 +18,10 @@ packages:
   dsbuntis:
     dependency: "direct main"
     description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "0b63bc795edaf27de5504eb72765a107ad26152f"
-      url: "https://github.com/Ampless/dsbuntis.git"
-    source: git
-    version: "4.0.0-alpha.8"
+      name: dsbuntis
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "4.0.1"
   html:
     dependency: transitive
     description:

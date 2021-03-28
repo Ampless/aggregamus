@@ -16,7 +16,7 @@ Future<void> sample(
     setCache: (id, resp, ttl) => cache[id] = resp,
     findProxy: (_) => 'PROXY $proxy',
   );
-  final plans = await getAllSubs(username, password, http);
+  final plans = await getAllSubs(username, password, http: http);
   print('Got data from dsbuntis, saving...');
   final json = jsonEncode({
     'unixts': now.millisecondsSinceEpoch,
@@ -24,9 +24,28 @@ Future<void> sample(
     'plans': plans,
     'cache': cache,
   });
-  await File('$output/${now.millisecondsSinceEpoch / 1000}.json')
+  await File('$output/${(now.millisecondsSinceEpoch / 1000) as int}.json')
       .writeAsString(json);
   print('Saved to file.');
+}
+
+Future<void> cleanup(String output) async {
+  print('Cleaning up...');
+  final id = DateTime.now().millisecondsSinceEpoch;
+  final files = Directory(output).list().where((e) => e is File);
+  final pr = await Process.run(
+      '/bin/sh',
+      [
+        '-c',
+        'tar cJvf $output/$id.tar.xz ' +
+            await files.map((e) => e.absolute.path).reduce((p, e) => '$p $e')
+      ],
+      stdoutEncoding: utf8,
+      stderrEncoding: utf8);
+  print(pr.stdout);
+  print(pr.stderr);
+  if (pr.exitCode != 0) return;
+  await files.forEach((e) => e.deleteSync());
 }
 
 void main() async {
@@ -35,8 +54,11 @@ void main() async {
   String password = config['password'];
   String output = config['output'];
   String proxy = config['proxy'];
+  var count = 0;
   while (true) {
     await sample(username, password, output, proxy);
+    if (count % 500 == 0) await cleanup(output);
+    count++;
     sleep(Duration(minutes: 5));
   }
 }

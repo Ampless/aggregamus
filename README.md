@@ -15,5 +15,4 @@ probably want to modify them.
 `git clone https://github.com/Ampless/aggregamus.git && cd aggregamus && dart pub get`
 6. Install `aggregamus`:
 `dart compile exe bin/aggregamus.dart && sudo mv bin/aggregamus.exe /usr/bin/aggregamus`
-7. Run `aggregamus`: Either through systemd, or just through the shell:
-`aggregamus`
+7. Run `aggregamus`: Either through systemd, or just through the shell
