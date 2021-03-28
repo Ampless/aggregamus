@@ -57,7 +57,7 @@ void main() async {
   var count = 0;
   while (true) {
     await sample(username, password, output, proxy);
-    if (count % 500 == 0) await cleanup(output);
+    if (count % 300 == 299) await cleanup(output);
     count++;
     sleep(Duration(minutes: 5));
   }
