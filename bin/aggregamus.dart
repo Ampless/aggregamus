@@ -30,8 +30,11 @@ Future<void> sample(
 }
 
 Future<void> cleanup(String output) async {
-  final files = await Directory(output).list().where((e) => e is File).toList();
-  if (files.length < 300) return;
+  final files = await Directory(output)
+      .list()
+      .where((e) => e.path.endsWith('.json') && e is File)
+      .toList();
+  if (files.length < 200) return;
   print('Cleaning up...');
   final id = DateTime.now().millisecondsSinceEpoch;
   final pr = await Process.run(
