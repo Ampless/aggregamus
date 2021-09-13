@@ -5,8 +5,8 @@ environment:
   sdk: '>=2.12.0 <3.0.0'
 
 dependencies:
-  dsbuntis: ^6.0.0
-  schttp: ^3.2.1
+  dsbuntis: ^6.1.0
+  schttp: ^4.0.0
 
 dev_dependencies:
   pedantic: ^1.11.1

@@ -4,19 +4,17 @@ import 'dart:io';
 import 'package:dsbuntis/dsbuntis.dart';
 import 'package:schttp/schttp.dart';
 
-Future<void> sample(
-  String username,
-  String password,
-  String output,
-  String proxy,
-) async {
+Future<void> sample(Map config) async {
   final now = DateTime.now();
-  final cache = <String, String>{};
+  final cache = <List>[];
   final http = ScHttpClient(
-    setCache: (id, resp, ttl) => cache[id] = resp,
-    findProxy: (_) => 'PROXY $proxy',
+    setCache: (id, resp, ttl) => cache.add([id, resp, ttl]),
+    setPostCache: (id, body, resp, ttl) => cache.add([id, body, resp, ttl]),
+    setBinCache: (id, resp, ttl) => cache.add([id, resp, ttl]),
+    findProxy: (_) => 'PROXY ${config['proxy']}',
   );
-  final plans = await getAllSubs(username, password, http: http);
+  final plans =
+      await getAllSubs(config['username'], config['password'], http: http);
   print('Got data from dsbuntis, saving...');
   final json = jsonEncode({
     'unixts': now.millisecondsSinceEpoch,
@@ -24,7 +22,8 @@ Future<void> sample(
     'plans': plans,
     'cache': cache,
   });
-  await File('$output/${(now.millisecondsSinceEpoch / 1000).round()}.json')
+  await File(config['output'] +
+          '/${(now.millisecondsSinceEpoch / 1000).round()}.json')
       .writeAsString(json);
   print('Saved to file.');
 }
@@ -54,13 +53,9 @@ Future<void> cleanup(String output) async {
 
 void main() async {
   final config = jsonDecode(File('/etc/aggregamusrc.json').readAsStringSync());
-  String username = config['username'];
-  String password = config['password'];
-  String output = config['output'];
-  String proxy = config['proxy'];
   while (true) {
-    await sample(username, password, output, proxy);
-    await cleanup(output);
+    await sample(config);
+    await cleanup(config['output']);
     sleep(Duration(minutes: 5));
   }
 }
