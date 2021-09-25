@@ -8,9 +8,10 @@ Future<void> sample(Map config) async {
   final now = DateTime.now();
   final cache = <List>[];
   final http = ScHttpClient(
-    setCache: (id, resp, ttl) => cache.add([id, resp, ttl]),
-    setPostCache: (id, body, resp, ttl) => cache.add([id, body, resp, ttl]),
-    setBinCache: (id, resp, ttl) => cache.add([id, resp, ttl]),
+    setCache: (u, resp, ttl) => cache.add([u.toString(), resp, ttl]),
+    setPostCache: (u, body, resp, ttl) =>
+        cache.add([u.toString(), body, resp, ttl]),
+    setBinCache: (u, resp, ttl) => cache.add([u.toString(), resp, ttl]),
     findProxy: (_) => 'PROXY ${config['proxy']}',
   );
   final plans =
