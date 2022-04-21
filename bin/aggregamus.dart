@@ -7,7 +7,6 @@ import 'package:prometheus_client/runtime_metrics.dart' as runtime_metrics;
 import 'package:prometheus_client_shelf/shelf_handler.dart';
 import 'package:schttp/schttp.dart';
 import 'package:shelf/shelf_io.dart';
-import 'package:shelf_router/shelf_router.dart';
 
 final uncompressedSaves = Gauge(
   name: 'aggregamus_uncompressed',
@@ -76,8 +75,8 @@ Future<void> monitor(int monitoringPort) async {
   runtime_metrics.register();
   uncompressedSaves.register();
 
-  final server = await serve(Router()..get('/metrics', prometheusHandler()),
-      InternetAddress.anyIPv6, monitoringPort);
+  final server =
+      await serve(prometheusHandler(), InternetAddress.anyIPv6, monitoringPort);
   print(
       'Serving metrics at http://${server.address.host}:${server.port}/metrics');
 }
