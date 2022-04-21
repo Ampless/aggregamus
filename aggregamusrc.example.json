@@ -1,6 +1,7 @@
 {
-    "username": "133742",
-    "password": "topsecret",
+    "username": "187801",
+    "password": "public",
     "output": "/var/dsb",
-    "proxy": "127.0.0.1:5566"
+    "proxy": "127.0.0.1:5566",
+    "monitoring_port": 8699
 }

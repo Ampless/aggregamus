@@ -33,7 +33,7 @@ Future<void> sample(Map config) async {
     );
     final plans =
         await getAllSubs(config['username'], config['password'], http: http);
-    print('Got data from dsbuntis.');
+    print('Got data from dsbuntis');
     json['plans'] = plans;
     json['cache'] = cache;
   } catch (e) {
@@ -72,17 +72,18 @@ Future<void> cleanup(String output) async {
   uncompressedSaves.inc(-uncompressedSaves.value);
 }
 
-Future<void> monitor() async {
+Future<void> monitor(int monitoringPort) async {
   runtime_metrics.register();
   uncompressedSaves.register();
 
   final server = await serve(Router()..get('/metrics', prometheusHandler()),
-      InternetAddress.anyIPv6, 8699);
+      InternetAddress.anyIPv6, monitoringPort);
   print('Serving metrics at http://${server.address.host}:${server.port}');
 }
 
 void main() async {
   final config = jsonDecode(File('/etc/aggregamusrc.json').readAsStringSync());
+  await monitor(config['monitoring_port']);
   while (true) {
     await sample(config);
     await cleanup(config['output']);
