@@ -2,7 +2,17 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dsbuntis/dsbuntis.dart';
+import 'package:prometheus_client/prometheus_client.dart';
+import 'package:prometheus_client/runtime_metrics.dart' as runtime_metrics;
+import 'package:prometheus_client_shelf/shelf_handler.dart';
 import 'package:schttp/schttp.dart';
+import 'package:shelf/shelf_io.dart';
+import 'package:shelf_router/shelf_router.dart';
+
+final uncompressedSaves = Counter(
+  name: 'aggregamus_uncompressed',
+  help: 'The number of saved JSONs that weren\'t compressed already.',
+);
 
 Future<void> sample(Map config) async {
   final now = DateTime.now();
@@ -27,13 +37,14 @@ Future<void> sample(Map config) async {
     json['plans'] = plans;
     json['cache'] = cache;
   } catch (e) {
-    print('Error.');
+    print('Error');
     json['error'] = e is Error ? '$e\n${e.stackTrace}' : e;
   }
   await File(config['output'] +
           '/${(now.millisecondsSinceEpoch / 1000).round()}.json')
       .writeAsString(jsonEncode(json));
-  print('Saved to file.');
+  uncompressedSaves.inc();
+  print('Saved to file');
 }
 
 Future<void> cleanup(String output) async {
@@ -42,7 +53,7 @@ Future<void> cleanup(String output) async {
       .where((e) => e.path.endsWith('.json') && e is File)
       .toList();
   if (files.length < 200) return;
-  print('Cleaning up...');
+  print('Cleaning up');
   final id = (DateTime.now().millisecondsSinceEpoch / 1000).round();
   final pr = await Process.run(
       '/usr/bin/env',
@@ -58,6 +69,16 @@ Future<void> cleanup(String output) async {
   print(pr.stderr);
   if (pr.exitCode != 0) return;
   await Future.wait(files.map((e) => e.delete()));
+  uncompressedSaves.inc(-uncompressedSaves.value);
+}
+
+Future<void> monitor() async {
+  runtime_metrics.register();
+  uncompressedSaves.register();
+
+  final server = await serve(Router()..get('/metrics', prometheusHandler()),
+      InternetAddress.anyIPv6, 8699);
+  print('Serving metrics at http://${server.address.host}:${server.port}');
 }
 
 void main() async {

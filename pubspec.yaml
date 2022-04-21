@@ -6,7 +6,11 @@ environment:
 
 dependencies:
   dsbuntis: ^8.0.0
+  prometheus_client: ^1.0.0
+  prometheus_client_shelf: ^1.0.0
   schttp: ^4.1.0
+  shelf: ^1.3.0
+  shelf_router: ^1.1.2
 
 dev_dependencies:
   lints: ^1.0.1
