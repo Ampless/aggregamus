@@ -6,27 +6,33 @@ import 'package:schttp/schttp.dart';
 
 Future<void> sample(Map config) async {
   final now = DateTime.now();
-  final cache = <List>[];
-  final http = ScHttpClient(
-    setCache: (u, resp, ttl) => cache.add([u.toString(), resp, ttl.toString()]),
-    setPostCache: (u, body, resp, ttl) =>
-        cache.add([u.toString(), body, resp, ttl.toString()]),
-    setBinCache: (u, resp, ttl) =>
-        cache.add([u.toString(), resp, ttl.toString()]),
-    findProxy: (_) => 'PROXY ${config['proxy']}',
-  );
-  final plans =
-      await getAllSubs(config['username'], config['password'], http: http);
-  print('Got data from dsbuntis, saving...');
-  final json = jsonEncode({
+  final json = {
     'unixts': now.millisecondsSinceEpoch,
     'ts': now.toIso8601String(),
-    'plans': plans,
-    'cache': cache,
-  });
+  };
+  try {
+    final cache = <List>[];
+    final http = ScHttpClient(
+      setCache: (u, resp, ttl) =>
+          cache.add([u.toString(), resp, ttl.toString()]),
+      setPostCache: (u, body, resp, ttl) =>
+          cache.add([u.toString(), body, resp, ttl.toString()]),
+      setBinCache: (u, resp, ttl) =>
+          cache.add([u.toString(), resp, ttl.toString()]),
+      findProxy: (_) => 'PROXY ${config['proxy']}',
+    );
+    final plans =
+        await getAllSubs(config['username'], config['password'], http: http);
+    print('Got data from dsbuntis.');
+    json['plans'] = plans;
+    json['cache'] = cache;
+  } catch (e) {
+    print('Error.');
+    json['error'] = e is Error ? '$e\n${e.stackTrace}' : e;
+  }
   await File(config['output'] +
           '/${(now.millisecondsSinceEpoch / 1000).round()}.json')
-      .writeAsString(json);
+      .writeAsString(jsonEncode(json));
   print('Saved to file.');
 }
 
@@ -37,20 +43,21 @@ Future<void> cleanup(String output) async {
       .toList();
   if (files.length < 200) return;
   print('Cleaning up...');
-  final id = DateTime.now().millisecondsSinceEpoch;
+  final id = (DateTime.now().millisecondsSinceEpoch / 1000).round();
   final pr = await Process.run(
-      '/bin/sh',
+      '/usr/bin/env',
       [
-        '-c',
-        'tar cJvf $output/$id.tar.xz ' +
-            files.map((e) => e.absolute.path).reduce((p, e) => '$p $e')
+        'tar',
+        'cJvf',
+        '$output/$id.tar.xz',
+        ...files.map((e) => e.absolute.path),
       ],
       stdoutEncoding: utf8,
       stderrEncoding: utf8);
   print(pr.stdout);
   print(pr.stderr);
   if (pr.exitCode != 0) return;
-  files.forEach((e) => e.deleteSync());
+  await Future.wait(files.map((e) => e.delete()));
 }
 
 void main() async {
