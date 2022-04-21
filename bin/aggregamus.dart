@@ -9,7 +9,7 @@ import 'package:schttp/schttp.dart';
 import 'package:shelf/shelf_io.dart';
 import 'package:shelf_router/shelf_router.dart';
 
-final uncompressedSaves = Counter(
+final uncompressedSaves = Gauge(
   name: 'aggregamus_uncompressed',
   help: 'The number of saved JSONs that weren\'t compressed already.',
 );
@@ -69,7 +69,7 @@ Future<void> cleanup(String output) async {
   print(pr.stderr);
   if (pr.exitCode != 0) return;
   await Future.wait(files.map((e) => e.delete()));
-  uncompressedSaves.inc(-uncompressedSaves.value);
+  uncompressedSaves.dec(uncompressedSaves.value);
 }
 
 Future<void> monitor(int monitoringPort) async {
@@ -78,7 +78,8 @@ Future<void> monitor(int monitoringPort) async {
 
   final server = await serve(Router()..get('/metrics', prometheusHandler()),
       InternetAddress.anyIPv6, monitoringPort);
-  print('Serving metrics at http://${server.address.host}:${server.port}');
+  print(
+      'Serving metrics at http://${server.address.host}:${server.port}/metrics');
 }
 
 void main() async {
