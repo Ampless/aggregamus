@@ -87,6 +87,6 @@ void main() async {
   while (true) {
     await sample(config);
     await cleanup(config['output']);
-    sleep(Duration(minutes: 5));
+    await Future.delayed(Duration(minutes: 5));
   }
 }
