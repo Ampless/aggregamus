@@ -36,8 +36,8 @@ Future<void> sample(Map config) async {
     json['plans'] = plans;
     json['cache'] = cache;
   } catch (e) {
-    print('Error');
-    json['error'] = e is Error ? '$e\n${e.stackTrace}' : e;
+    print('Error: $e');
+    json['error'] = e is Error ? '$e\n${e.stackTrace}' : e.toString();
   }
   await File(config['output'] +
           '/${(now.millisecondsSinceEpoch / 1000).round()}.json')
