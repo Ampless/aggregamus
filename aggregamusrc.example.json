@@ -2,6 +2,6 @@
     "username": "187801",
     "password": "public",
     "output": "/var/dsb",
-    "proxy": "127.0.0.1:5566",
+    "proxy": "127.0.0.1:9052",
     "monitoring_port": 8699
 }

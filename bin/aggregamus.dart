@@ -28,16 +28,18 @@ Future<void> sample(Map config) async {
           cache.add([u.toString(), body, resp, ttl.toString()]),
       setBinCache: (u, resp, ttl) =>
           cache.add([u.toString(), resp, ttl.toString()]),
-      findProxy: (_) => 'PROXY ${config['proxy']}',
+      findProxy: config.containsKey('proxy')
+          ? (_) => 'PROXY ${config['proxy']}'
+          : null,
     );
     final plans =
         await getAllSubs(config['username'], config['password'], http: http);
     print('Got data from dsbuntis');
     json['plans'] = plans;
     json['cache'] = cache;
-  } catch (e) {
-    print('Error: $e');
-    json['error'] = e is Error ? '$e\n${e.stackTrace}' : e.toString();
+  } catch (e, st) {
+    stderr.writeln('$e');
+    json['error'] = '$e\n$st';
   }
   await File(config['output'] +
           '/${(now.millisecondsSinceEpoch / 1000).round()}.json')
