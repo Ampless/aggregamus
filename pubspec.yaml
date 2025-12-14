@@ -1,6 +1,6 @@
 name: aggregamus
 description: A Big Data project based on dsbuntis
-version: 1.1.0
+version: 1.1.1
 repository: https://github.com/Ampless/aggregamus
 
 environment:
@@ -10,8 +10,8 @@ dependencies:
   dsbuntis: ^8.0.0
   prometheus_client: ^1.0.0
   prometheus_client_shelf: ^1.0.0
-  schttp: ^4.1.0
+  schttp: ^5.0.0
   shelf: ^1.4.0
 
 dev_dependencies:
-  lints: ^2.0.1
+  lints: ^6.0.0

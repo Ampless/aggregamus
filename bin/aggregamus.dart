@@ -22,11 +22,11 @@ Future<void> sample(Map config) async {
   try {
     final cache = <List>[];
     final http = ScHttpClient(
-      setCache: (u, resp, ttl) =>
+      setCache: (u, _, resp, ttl) =>
           cache.add([u.toString(), resp, ttl.toString()]),
-      setPostCache: (u, body, resp, ttl) =>
+      setPostCache: (u, body, _, resp, ttl) =>
           cache.add([u.toString(), body, resp, ttl.toString()]),
-      setBinCache: (u, resp, ttl) =>
+      setBinCache: (u, _, resp, ttl) =>
           cache.add([u.toString(), resp, ttl.toString()]),
       findProxy: config.containsKey('proxy')
           ? (_) => 'PROXY ${config['proxy']}'
